@@ -4,7 +4,7 @@
   "description": "app to share public write private story",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "author": "sreekanth kotra",
   "license": "ISC",
