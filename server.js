@@ -26,7 +26,7 @@ const stories = require('./routes/stories');
 const keys = require('./config/keys');
 
 //Load helpers file
-const { truncate, stripTags, formateDate, select} = require('./helpers/hbs');
+const { truncate, stripTags, formateDate, select, editIcon} = require('./helpers/hbs');
 
 //Mongoose connect
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true })
@@ -46,7 +46,8 @@ app.engine('handlebars', exphbs({
     truncate: truncate,
     stripTags: stripTags,
     formateDate:formateDate,
-    select:select
+    select:select,
+    editIcon:editIcon
   },
   defaultLayout: 'main'
 }));
