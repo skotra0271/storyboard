@@ -5,10 +5,12 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
 const path = require('path');
+const bodyParser = require('body-parser');
 const app = express();
 
 //Load Model 
 require('./models/User');
+require('./models/Story');
 
 //Passport Config
 require('./config/passport')(passport);
@@ -22,22 +24,33 @@ const stories = require('./routes/stories');
 //load Keys
 const keys = require('./config/keys');
 
+//Load helpers file
+const { truncate, stripTags } = require('./helpers/hbs');
+
 //Mongoose connect
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true })
   .then(() => console.log('Mongog DB connected'))
   .catch(err => console.log(err));
 
+//bodyparser middle
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+
 // Handlebar middleware
 app.engine('handlebars', exphbs({
-  defaultLayout:'main'
+  helpers: {
+    truncate: truncate,
+    stripTags: stripTags
+  },
+  defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
 
 app.use(cookieParser());
 app.use(session({
-  secret:'secret',
-  resave:true,
-  saveUninitialized:true
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
 }))
 
 //Pasport middleware
@@ -51,7 +64,7 @@ app.use((req, res, next) => {
 });
 
 //Set static folder
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //Use Routes
 app.use('/', index);
