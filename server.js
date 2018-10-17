@@ -6,6 +6,7 @@ const session = require('express-session');
 const exphbs = require('express-handlebars');
 const path = require('path');
 const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 const app = express();
 
 //Load Model 
@@ -25,7 +26,7 @@ const stories = require('./routes/stories');
 const keys = require('./config/keys');
 
 //Load helpers file
-const { truncate, stripTags } = require('./helpers/hbs');
+const { truncate, stripTags, formateDate, select} = require('./helpers/hbs');
 
 //Mongoose connect
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true })
@@ -36,11 +37,16 @@ mongoose.connect(keys.mongoURI, { useNewUrlParser: true })
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+//Method override midlleware
+app.use(methodOverride('_method'));
+
 // Handlebar middleware
 app.engine('handlebars', exphbs({
   helpers: {
     truncate: truncate,
-    stripTags: stripTags
+    stripTags: stripTags,
+    formateDate:formateDate,
+    select:select
   },
   defaultLayout: 'main'
 }));
